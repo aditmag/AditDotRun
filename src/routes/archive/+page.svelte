@@ -1,4 +1,5 @@
 <script>
+	import Nav from '$lib/Nav.svelte';
   /*
   import { onMount } from "svelte";
 
@@ -33,19 +34,7 @@ coz then ts would fet WAY too long (title of your sex tape).
 -->
 
 <div class="thin-centered">
-	<nav class="navbar">
-		<div class="navbar-left">
-			<a href="/" class="brand-link">
-				adit.run()
-			</a>
-		</div>
-		<div class="navbar-right">
-			<!-- <a href="/essays" class="nav-link">home</a> -->
-			<a href="/archive" class="nav-link">random(stuff)</a>
-			<a href="/hi" class="nav-link">say(hi)</a>
-			<!-- <a href="javascript:void(0)" class="nav-link">placeholder</a> -->
-		</div>
-	</nav>
+	<Nav />
 
     <!-- <center>
 		⚒️ under construction ⚒️
@@ -55,14 +44,15 @@ coz then ts would fet WAY too long (title of your sex tape).
 	<br>
 	CURATED LINKS: <br>
 	<a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html" target="_blank">the bitter lesson</a><br>
-	<a href="https://xkcd.com/2390/" target="_blank">computational linguists - xkcd</a><br>
+	<a href="https://xkcd.com/1211/" target="_blank">birds and dinosaurs - xkcd</a><br>
+	<a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgoqQ1qAYT0OQ6j7ezWu8GY2JlpsrW7aBqIwzk98O8snjfF6eiUQGWPKdVQPQ_e1vm2ePA3t9X6GBRk33kNO0rP_ketW7pJljsiKAkb1dkNyFgCKYL1LUH8xRFXYFCnsrbHV3LxWod5VbA/s640/20181030_232111.jpg" target="_blank">intl conf of surgeons - rk laxman</a><br>
 	<a href="https://paulgraham.com/ambitious.html" target="_blank">frighteningly ambitious startup ideas</a><br>
 	<a href="https://www.instagram.com/reels/DS9USsRE4ai/" target="_blank">adorable cat video</a><br>
 	<a href="https://cdn.mos.cms.futurecdn.net/QfLVpW7bGiruhRX3TpLqna.jpeg" target="_blank">1970 nike manifesto</a><br>
 	<a href="https://www.youtube.com/watch?v=eSvLFPFXjc8" target="_blank">field marshall sam manekshaw on leadership</a><br>
 	<a href="https://www.instagram.com/reels/DJxgsSQy51D/" target="_blank">feel good inc mini cover</a><br>
 	<br>
-	PHOTOS THAT MAKE ME FEEL THINGS: <br>
+	PHOTOS I LIKE: <br>
 	<div class="photo-masonry">
 		<img src="/photos/puf89elf9uf81.jpg" alt="" />
 		<img src="/photos/unnamed-2.jpg" alt="" />
@@ -106,42 +96,6 @@ coz then ts would fet WAY too long (title of your sex tape).
 		background: transparent;
 		box-sizing: border-box;
 	}
-	.navbar {
-		width: 100%;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1.5rem 0 1.5rem 0;
-		box-sizing: border-box;
-		font-family: 'JetBrains Mono', monospace;
-		background: white;
-		z-index: 10;
-		border-bottom: 1px solid #eee;
-		position: static;
-	}
-	.navbar-left {
-		font-weight: 700;
-		letter-spacing: 0.05em;
-		color: #222;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 14px;
-	}
-	.navbar-right {
-		display: flex;
-		gap: 2rem;
-	}
-	.nav-link {
-		color: #2563eb;
-		text-decoration: underline;
-		font-size: 14px;
-		font-family: 'JetBrains Mono', monospace;
-		transition: color 0.2s;
-		text-underline-offset: 2px;
-	}
-	.nav-link:hover {
-		color: #1d4ed8;
-		text-decoration-thickness: 2px;
-	}
 	a {
 		color: #2563eb;
 		text-decoration: underline;
@@ -151,15 +105,6 @@ coz then ts would fet WAY too long (title of your sex tape).
 	a:hover {
 		color: #1d4ed8;
 		text-decoration-thickness: 2px;
-	}
-	.brand-link {
-		color: #222;
-		text-decoration: none;
-		cursor: pointer;
-	}
-	.brand-link:hover {
-		color: #222;
-		text-decoration: none;
 	}
 	.contact-link {
 		color: #2563eb;

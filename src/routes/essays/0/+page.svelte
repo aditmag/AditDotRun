@@ -1,17 +1,9 @@
+<script>
+	import Nav from '$lib/Nav.svelte';
+</script>
+
 <div class="thin-centered">
-	<nav class="navbar">
-		<div class="navbar-left">
-			<a href="/" class="brand-link">
-				adit.run()
-			</a>
-		</div>
-		<div class="navbar-right">
-			<!-- <a href="/essays" class="nav-link">home</a> -->
-			<a href="/archive" class="nav-link">random(stuff)</a>
-			<a href="/hi" class="nav-link">say(hi)</a>
-			<!-- <a href="javascript:void(0)" class="nav-link">placeholder</a> -->
-		</div>
-	</nav>
+	<Nav />
 
     <br/><br/>
     <center>
@@ -76,51 +68,6 @@ the beauty of this point of view is that it can be broken down even further and 
 		padding: 2rem 2vw;
 		background: transparent;
 		box-sizing: border-box;
-	}
-	.navbar {
-		width: 100%;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 1.5rem 0 1.5rem 0;
-		box-sizing: border-box;
-		font-family: 'JetBrains Mono', monospace;
-		background: white;
-		z-index: 10;
-		border-bottom: 1px solid #eee;
-		position: static;
-	}
-	.navbar-left {
-		font-weight: 700;
-		letter-spacing: 0.05em;
-		color: #222;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 14px;
-	}
-	.navbar-right {
-		display: flex;
-		gap: 2rem;
-	}
-	.nav-link {
-		color: #2563eb;
-		text-decoration: underline;
-		font-size: 14px;
-		font-family: 'JetBrains Mono', monospace;
-		transition: color 0.2s;
-		text-underline-offset: 2px;
-	}
-	.nav-link:hover {
-		color: #1d4ed8;
-		text-decoration-thickness: 2px;
-	}
-	.brand-link {
-		color: #222;
-		text-decoration: none;
-		cursor: pointer;
-	}
-	.brand-link:hover {
-		color: #222;
-		text-decoration: none;
 	}
 	.contact-link {
 		color: #2563eb;

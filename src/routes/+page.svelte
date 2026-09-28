@@ -1,26 +1,9 @@
-<svelte:head>
-	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Noto+Serif+Dogra&display=swap" rel="stylesheet">
-
-</svelte:head>
-
+<script>
+	import Nav from '$lib/Nav.svelte';
+</script>
 
 <div class="thin-centered">
-	<nav class="navbar">
-		<div class="navbar-left">
-			<a href="/" class="brand-link">
-			  adit.run()
-			</a>
-		</div>
-		<div class="navbar-right">
-			<!-- <a href="/essays" class="nav-link">home</a> -->
-			<a href="/archive" class="nav-link">random(stuff)</a>
-			<a href="/hi" class="nav-link">say(hi)</a>
-			<!-- <a href="javascript:void(0)" class="nav-link">placeholder</a> -->
-		</div>
-	</nav>
+	<Nav />
 		<main style="margin-top:2.5rem;">
 			 <h1>
 				ADIT • आदित •
@@ -46,46 +29,13 @@
 
                         <p><b>STUFF I'VE DONE</b></p>
                         <ul>
-							<li>- nvidia 4th place, 400k+ impressions — <a href="https://www.instagram.com/stanfordtreehacks" target="_blank">treehacks</a> @ stanford. </li>
-							<li>- 1/6 handpicked by mysql's ex-ceo for a 15wk founder sprint.</li>
-                            <li>- waited 30 mins in the parking to fanboy dr andrew ng.</li>
-                            <li>- presented at neurips workshop and natl science fair at 17.</li>
-                            <li>- nicknamed
-								<span class="tooltip-underline">
-								कबाड़ी
-								<span class="tooltip-box">
-									<span style="font-weight:700;">कबाड़ी</span> (kabadi)<br/>
-									<span style="color:#888;">/kəˈbɑː.ɽiː/</span><br/>
-									scrap dealer
-								</span>
-							</span>
-							at home for hoarding junk to build stuff.</li>
+							<li>- 400k views + nvidia prize — treehacks @ stanford. </li>
+							<li>- 1/6 builders handpicked by marten mickos (mysql).</li>
+                            <li>- neurips workshop + natl sci fair at 17.</li>
+                            <li>- slipped on a banana peel on the road like a cartoon.</li>
                         </ul>
 
                         <br/><br/>
-
-						<!-- New light grey text box above previous work section -->
-						<div class="custom-text-box">
-							<!-- Put your text here -->
-							<p>i've been a huge fan of cartoons for as long as i can remember. 
-								when i look back, i realise how much i loved it when the 
-								characters just built things: <br/><br/>
-								- mr. bean and his super trolley with a BILLION features. <br/>	
-								- phineas and ferb's nanobots. <br/>
-								- tom blueprinting the perfect mousetrap. <br/>
-								- mr. fox welding the evening away in his workshop. <br/><br/>
-
-								that's the high i've been chasing ever since -- mini hot air balloons, msw logo donut generators, lemonade stands, solar powered toy boats... before finally teaching myself to code at 12.
-
-				
-								
-
-								
-							
-							</p>
-						</div>
-
-						<br/><br/>
 
                         <p><b>PREVIOUS WORK</b></p>
                         <ul>
@@ -93,7 +43,7 @@
 							<li>- <a href="https://aaltoes.com" target="_blank">aaltoes.com</a>: made people build for the love of the game.</li>
                             <li>- <a href="https://smu.edu.sg" target="_blank">smu.edu.sg</a>: probabilistic early rumour detection models</li>
                             <li>- <a href="https://web.archive.org/web/20240727225148/https://projectbeta.club/" target="_blank">projectbeta.club</a>: became president to skip classes.</li>
-                            <li>- <a href="https://web.archive.org/web/20220125185014/https://slingshotahead.com/" target="_blank">slingshotahead.com</a>: growth/community — 10xed their discord.</li>  
+                            <li>- <a href="https://web.archive.org/web/20220125185014/https://slingshotahead.com/" target="_blank">slingshotahead.com</a>: future 'lebrons of tech'.</li>  
                         </ul>
 
 						<br/><br/>
@@ -104,42 +54,6 @@
 </div>
 
 <style>
-		.navbar {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 1.5rem 0 1.5rem 0;
-			box-sizing: border-box;
-			font-family: 'JetBrains Mono', monospace;
-			background: white;
-			z-index: 10;
-			border-bottom: 1px solid #eee;
-			position: static;
-		}
-		.navbar-left {
-			font-weight: 700;
-			letter-spacing: 0.05em;
-			color: #222;
-			font-family: 'JetBrains Mono', monospace;
-			font-size: 14px;
-		}
-	.navbar-right {
-		display: flex;
-		gap: 2rem;
-	}
-	.nav-link {
-		color: #2563eb;
-		text-decoration: underline;
-		font-size: 14px;
-		font-family: 'JetBrains Mono', monospace;
-		transition: color 0.2s;
-		text-underline-offset: 2px;
-	}
-	.nav-link:hover {
-		color: #1d4ed8;
-		text-decoration-thickness: 2px;
-	}
 
 	a {
 		color: #2563eb;
@@ -216,24 +130,6 @@
 	@keyframes fadeIn {
 		from { opacity: 0; transform: translateX(-50%) translateY(10px); }
 		to { opacity: 1; transform: translateX(-50%) translateY(0); }
-	}
-	.brand-link {
-		color: #222;
-		text-decoration: none;
-		cursor: pointer;
-	}
-	.brand-link:hover {
-		color: #222;
-		text-decoration: none;
-	}
-	.custom-text-box {
-		background: #f7f7f8;
-		border-radius: 0px;
-		padding: 1.2rem 1.5rem;
-		margin: 0 auto;
-		box-sizing: border-box;
-		font-size: 14px;
-		color: #222;
 	}
 	.dogra-text {
 		font-family: 'Noto Serif Dogra', serif;
