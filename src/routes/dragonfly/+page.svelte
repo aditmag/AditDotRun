@@ -217,14 +217,13 @@
 </div>
 
 <style>
-	/* a plain hand-made HTML page: the browser's own Times and Courier, link blue, black on white */
+	/* a plain hand-made HTML page: the browser's own Times, link blue, black on white */
 	.page {
 		--ink: #000;
 		--muted: #707070;
 		--line: #d0d0d0;
 		--link: #0000ee;
 		--na: #a0522d;
-		--mono: 'Courier New', Courier, monospace;
 		min-height: 100vh;
 		box-sizing: border-box;
 		padding: 2rem 4vw 3rem;
@@ -287,10 +286,8 @@
 	.track { height: 1px; background: var(--line); position: relative; }
 	.fill { position: absolute; left: 0; top: -1px; height: 3px; background: #c9c9c9; transition: width 0.35s ease; }
 	.top .fill { background: var(--ink); }
-	.pct { text-align: right; font-family: var(--mono); font-size: 0.9rem; }
-	.na { margin: 0.2rem 0 0; color: #555; }
-	.na, .caption { font-family: var(--mono); font-size: 0.8rem; } /* Courier sets light: a touch larger and darker */
-	.caption:not(.err) { color: #555; }
+	.pct { text-align: right; font-variant-numeric: tabular-nums; }
+	.na { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--muted); }
 	.na.hi { color: var(--na); }
 
 	.plus {
