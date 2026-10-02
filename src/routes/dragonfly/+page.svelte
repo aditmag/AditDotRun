@@ -15,11 +15,13 @@
 	const blank = (): Q => ({ type: 'bool', q: '', options: '', lo: 1, hi: 5, alo: '', ahi: '' });
 	const KINDS: [Kind, string][] = [['bool', 'yes / no'], ['choice', 'choice'], ['score', 'scale']];
 
+	// defaults for the Wright Flyer photo, each run against the trained model: 12 seconds 91% (true), 1 person 97%,
+	// yes 75% (120 ft flight vs a 211 ft wingspan). "Standing on the ground", not "in the image": Orville lies flat
+	// on the wing and is invisible at 448 px, so a plain count would say 1 and be wrong.
 	let qs: Q[] = $state([
-		{ ...blank(), q: 'Is this photo in colour?' },
-		{ ...blank(), type: 'choice', q: 'What is the main subject?', options: 'airplane, car, boat, bird, kite' },
-		{ ...blank(), type: 'score', q: 'How crowded is the scene?', alo: 'empty', ahi: 'packed' },
-		{ ...blank(), type: 'choice', q: 'What colour is the dog?', options: 'brown, black, white' }
+		{ ...blank(), type: 'choice', q: 'How long did this flight last?', options: 'about 12 seconds, about 12 minutes, about 2 hours, about a day' },
+		{ ...blank(), type: 'score', q: 'How many people are standing on the ground?', lo: 0, hi: 5, alo: 'none', ahi: 'five' },
+		{ ...blank(), q: 'Was this flight shorter than the wingspan of a Boeing 747?' }
 	]);
 	let online = $state(false);
 	let status = $state('connecting…');
