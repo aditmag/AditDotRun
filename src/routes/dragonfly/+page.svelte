@@ -147,7 +147,7 @@
 <svelte:head>
 	<title>Dragonfly (Research Preview)</title>
 	<meta name="description" content="Ask an image many typed questions and get calibrated probabilities back from one forward pass." />
-	<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet" />
 </svelte:head>
 
 <div class="page">
@@ -162,7 +162,7 @@
 				ondragover={(e) => { e.preventDefault(); over = true; }}
 				ondragleave={() => (over = false)}
 				ondrop={(e) => { e.preventDefault(); over = false; loadImage(e.dataTransfer?.files[0]); }}>
-				{#if preview}<img src={preview} alt="What the questions are about" />{:else}<em>Drop an image</em>{/if}
+				{#if preview}<img src={preview} alt="What the questions are about" />{:else}<span class="hint">Drop an image</span>{/if}
 				<input type="file" accept="image/*" hidden onchange={(e) => loadImage(e.currentTarget.files?.[0])} />
 			</label>
 			<p class="caption">
@@ -226,13 +226,13 @@
 		padding: 2.25rem 4vw 4rem;
 		background: #fff;
 		color: var(--ink);
-		font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+		font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
 		font-size: 19px;
 		line-height: 1.45;
 		font-variant-numeric: lining-nums tabular-nums;
 	}
 	h1 { margin: 0 0 3rem; font-size: 1.35rem; font-weight: 400; letter-spacing: 0.005em; }
-	h1 span { color: var(--muted); font-style: italic; }
+	h1 span { color: var(--muted); }
 	.split { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: start; }
 	.left { position: sticky; top: 2rem; }
 	@media (max-width: 760px) {
@@ -248,9 +248,9 @@
 	.square.empty { border-style: dashed; }
 	.square:hover, .square.over { border-color: var(--ink); }
 	.square img { width: 100%; height: 100%; object-fit: contain; display: block; }
-	.square em { color: var(--muted); }
-	.caption { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; font-style: italic; max-width: 80vh; }
-	.caption.err { color: #a12a1e; font-style: normal; }
+	.square .hint { color: var(--muted); }
+	.caption { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; max-width: 80vh; }
+	.caption.err { color: #a12a1e; }
 
 	.right { display: flex; flex-direction: column; }
 	.q { padding: 0 0 1.6rem; margin-bottom: 1.6rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.45rem; }
@@ -259,7 +259,7 @@
 		font: inherit; color: var(--ink); background: transparent; border: 0; border-radius: 0;
 		padding: 0.1rem 0; min-width: 0; outline: none;
 	}
-	input::placeholder { color: #b5b5b5; font-style: italic; }
+	input::placeholder { color: #b5b5b5; }
 	.text { flex: 1; font-size: 1.15rem; }
 	.sub { font-size: 0.95rem; border-bottom: 1px solid var(--line); }
 	.sub:focus, .num:focus { border-bottom-color: var(--ink); }
@@ -283,7 +283,7 @@
 	.fill { position: absolute; left: 0; top: -1px; height: 3px; background: #c9c9c9; transition: width 0.35s ease; }
 	.top .fill { background: var(--ink); }
 	.pct { text-align: right; }
-	.na { margin: 0.2rem 0 0; font-size: 0.85rem; font-style: italic; color: var(--muted); }
+	.na { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--muted); }
 	.na.hi { color: var(--na); }
 
 	.plus {
