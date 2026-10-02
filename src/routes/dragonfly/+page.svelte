@@ -154,6 +154,7 @@
 <div class="page">
 	<header>
 		<h1>Dragonfly <span>(Research Preview)</span></h1>
+		<p class="lede">Upload an image, ask a query, and get the answer in milliseconds :)</p>
 	</header>
 
 	<div class="split">
@@ -235,7 +236,9 @@
 		font-size: 18px;
 		line-height: 1.4;
 	}
-	h1 { margin: 0 0 2.5rem; font-size: 1.6rem; font-weight: bold; }
+	header { margin-bottom: 2.5rem; }
+	h1 { margin: 0; font-size: 1.6rem; font-weight: bold; }
+	.lede { margin: 0.4rem 0 0; }
 	h1 span { font-weight: normal; color: var(--muted); }
 	.foot { margin: 4rem 0 0; font-size: 0.85rem; }
 	.foot a { color: var(--link); }
