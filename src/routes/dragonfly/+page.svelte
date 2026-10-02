@@ -4,9 +4,7 @@
 	// the model server: one P100 on CSC cPouta (Finland), HTTPS via Caddy. Empty until that VM exists; meanwhile
 	// model/demo.sh opens this page with #api=http://localhost:8765&token=... (an SSH tunnel to a Roihu GPU).
 	// The fragment never leaves the browser.
-	// 2026-10-02: a 2-hour public window, Roihu GPU via SSH tunnel + Cloudflare quick tunnel from the Mac;
-	// once either stops, the status call fails and the page shows "offline".
-	const DEFAULT_API = 'https://relaxation-buildings-monthly-functioning.trycloudflare.com';
+	const DEFAULT_API = '';
 	let API = DEFAULT_API;
 	let token = '';
 	const EXAMPLE = '/photos/First_flight2.jpg';
