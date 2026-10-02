@@ -147,7 +147,6 @@
 <svelte:head>
 	<title>Dragonfly (Research Preview)</title>
 	<meta name="description" content="Ask an image many typed questions and get calibrated probabilities back from one forward pass." />
-	<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet" />
 </svelte:head>
 
 <div class="page">
@@ -213,26 +212,32 @@
 			{#if timing || error}<p class="caption" class:err={error}>{error || timing}</p>{/if}
 		</section>
 	</div>
+
+	<p class="foot"><a href="/">adit.run</a></p>
 </div>
 
 <style>
+	/* a plain hand-made HTML page: the browser's own Times and Courier, link blue, black on white */
 	.page {
-		--ink: #1a1a1a;
-		--muted: #8a8a8a;
-		--line: #e6e6e6;
-		--na: #9a5b13;
+		--ink: #000;
+		--muted: #707070;
+		--line: #d0d0d0;
+		--link: #0000ee;
+		--na: #a0522d;
+		--mono: 'Courier New', Courier, monospace;
 		min-height: 100vh;
 		box-sizing: border-box;
-		padding: 2.25rem 4vw 4rem;
+		padding: 2rem 4vw 3rem;
 		background: #fff;
 		color: var(--ink);
-		font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
-		font-size: 19px;
-		line-height: 1.45;
-		font-variant-numeric: lining-nums tabular-nums;
+		font-family: 'Times New Roman', Times, serif;
+		font-size: 18px;
+		line-height: 1.4;
 	}
-	h1 { margin: 0 0 3rem; font-size: 1.35rem; font-weight: 400; letter-spacing: 0.005em; }
-	h1 span { color: var(--muted); }
+	h1 { margin: 0 0 2.5rem; font-size: 1.6rem; font-weight: bold; }
+	h1 span { font-weight: normal; color: var(--muted); }
+	.foot { margin: 4rem 0 0; font-size: 0.85rem; }
+	.foot a { color: var(--link); }
 	.split { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: start; }
 	.left { position: sticky; top: 2rem; }
 	@media (max-width: 760px) {
@@ -270,10 +275,10 @@
 	button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 	.rm { color: #c4c4c4; font-size: 1.2rem; line-height: 1; }
 	.rm:hover { color: var(--ink); }
-	.kinds { display: flex; gap: 1.1rem; font-size: 0.9rem; }
-	.kinds button { color: #b5b5b5; }
-	.kinds button:hover { color: var(--muted); }
-	.kinds button.on { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+	/* answer types read like links; the chosen one is plain black text */
+	.kinds { display: flex; gap: 1rem; font-size: 0.9rem; }
+	.kinds button { color: var(--link); text-decoration: underline; }
+	.kinds button.on { color: var(--ink); text-decoration: none; }
 
 	.bars { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 0.4rem; font-size: 0.95rem; }
 	.bar { display: grid; grid-template-columns: minmax(5rem, 9rem) 1fr 2.8rem; gap: 0.9rem; align-items: center; color: var(--muted); }
@@ -282,13 +287,15 @@
 	.track { height: 1px; background: var(--line); position: relative; }
 	.fill { position: absolute; left: 0; top: -1px; height: 3px; background: #c9c9c9; transition: width 0.35s ease; }
 	.top .fill { background: var(--ink); }
-	.pct { text-align: right; }
-	.na { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--muted); }
+	.pct { text-align: right; font-family: var(--mono); font-size: 0.9rem; }
+	.na { margin: 0.2rem 0 0; color: #555; }
+	.na, .caption { font-family: var(--mono); font-size: 0.8rem; } /* Courier sets light: a touch larger and darker */
+	.caption:not(.err) { color: #555; }
 	.na.hi { color: var(--na); }
 
 	.plus {
 		width: 100%; height: 5.5rem; border: 1px solid var(--line); color: var(--muted);
-		font-size: 2.2rem; font-weight: 400; line-height: 1; transition: border-color 0.2s, color 0.2s;
+		font-size: 2.4rem; line-height: 1; transition: border-color 0.2s, color 0.2s;
 	}
 	.plus:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
 	.plus:disabled { opacity: 0.4; cursor: default; }
