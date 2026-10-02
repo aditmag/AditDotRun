@@ -1,6 +1,5 @@
 <script lang="ts">
-	import Nav from '$lib/Nav.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 
 	// the model server: one P100 on CSC cPouta (Finland), HTTPS via Caddy. Empty until that VM exists; meanwhile
 	// model/demo.sh opens this page with #api=http://localhost:8765&token=... (an SSH tunnel to a Roihu GPU).
@@ -13,20 +12,23 @@
 	type Kind = 'bool' | 'choice' | 'score';
 	type Result = { type: Kind; answers: [string, number][]; na: number };
 	type Q = { type: Kind; q: string; options: string; lo: number; hi: number; alo: string; ahi: string; result?: Result };
+	const blank = (): Q => ({ type: 'bool', q: '', options: '', lo: 1, hi: 5, alo: '', ahi: '' });
+	const KINDS: [Kind, string][] = [['bool', 'yes / no'], ['choice', 'choice'], ['score', 'scale']];
 
 	let qs: Q[] = $state([
-		{ type: 'bool', q: 'Is this photo in color?', options: '', lo: 1, hi: 5, alo: '', ahi: '' },
-		{ type: 'choice', q: 'What is the main subject?', options: 'airplane, car, boat, bird, kite', lo: 1, hi: 5, alo: '', ahi: '' },
-		{ type: 'score', q: 'How crowded is the scene?', options: '', lo: 1, hi: 5, alo: 'empty', ahi: 'packed' },
-		{ type: 'choice', q: 'What colour is the dog?', options: 'brown, black, white', lo: 1, hi: 5, alo: '', ahi: '' }
+		{ ...blank(), q: 'Is this photo in colour?' },
+		{ ...blank(), type: 'choice', q: 'What is the main subject?', options: 'airplane, car, boat, bird, kite' },
+		{ ...blank(), type: 'score', q: 'How crowded is the scene?', alo: 'empty', ahi: 'packed' },
+		{ ...blank(), type: 'choice', q: 'What colour is the dog?', options: 'brown, black, white' }
 	]);
-	let status = $state('connecting to the model…');
+	let online = $state(false);
+	let status = $state('connecting…');
 	let error = $state('');
 	let timing = $state('');
-	let imgMeta = $state('');
 	let preview = $state('');
 	let over = $state(false);
 	let maxQ = $state(20);
+	let list: HTMLElement | undefined = $state();
 
 	let imageKey: string | null = null;
 	let imageB64 = '';
@@ -83,7 +85,7 @@
 			}
 			r.results.forEach((res: Result, k: number) => { qs[live[k][0]].result = res; });
 			const n = r.results.length;
-			timing = `${n} question${n > 1 ? 's' : ''}, one forward pass · model ${Math.round(r.answer_ms)} ms · round trip ${Math.round(performance.now() - t0)} ms`;
+			timing = `${n} question${n > 1 ? 's' : ''} in one pass · ${Math.round(r.answer_ms)} ms`;
 		} catch (e) { error = (e as Error).message; }
 		busy = false;
 		if (again) { again = false; ask(); }
@@ -91,8 +93,8 @@
 	const askSoon = () => { clearTimeout(timer); timer = setTimeout(ask, 300); };
 
 	async function loadImage(file: Blob | undefined | null) {
-		if (!file || !file.type.startsWith('image/')) { error = "that file isn't an image."; return; }
-		error = ''; imageKey = null; imgMeta = 'resizing…';
+		if (!file || !file.type.startsWith('image/')) { error = "That file isn't an image."; return; }
+		error = ''; imageKey = null;
 		try {
 			const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
 			// the model sees at most 448×448 pixels' worth (aspect kept): send exactly that
@@ -103,20 +105,23 @@
 			const blob: Blob = await new Promise((res) => c.toBlob((b) => res(b!), 'image/jpeg', 0.9));
 			if (preview.startsWith('blob:')) URL.revokeObjectURL(preview);
 			preview = URL.createObjectURL(blob);
+			if (!online) return;
 			imageB64 = await new Promise((res) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1]); fr.readAsDataURL(blob); });
-			imgMeta = 'encoding…';
-			const t0 = performance.now();
-			const r = await upload();
-			imgMeta = `${c.width}×${c.height} px · ${r.image_tokens} image tokens · upload + encode ${Math.round(performance.now() - t0)} ms`;
+			await upload();
 			qs.forEach((q) => (q.result = undefined));
 			ask();
-		} catch (e) { imgMeta = ''; error = (e as Error).message; }
+		} catch (e) { error = (e as Error).message; }
 	}
 
-	function add() { if (qs.length < maxQ) qs.push({ type: 'bool', q: '', options: '', lo: 1, hi: 5, alo: '', ahi: '' }); }
+	async function add() {
+		if (qs.length >= maxQ) return;
+		qs.push(blank());
+		await tick();
+		list?.querySelector<HTMLInputElement>('.q:last-child .text')?.focus();
+	}
 	function remove(i: number) { qs.splice(i, 1); askSoon(); }
 	function sorted(r: Result) { return r.type === 'score' ? r.answers : [...r.answers].sort((a, b) => b[1] - a[1]); }
-	const pct = (p: number) => (p * 100).toFixed(1) + '%';
+	const pct = (p: number) => Math.round(p * 100) + '%';
 
 	onMount(() => {
 		const paste = (e: ClipboardEvent) => { const f = e.clipboardData?.files[0]; if (f) loadImage(f); };
@@ -127,11 +132,12 @@
 		(API ? api('/api/status') : Promise.reject())
 			.then(async (s) => {
 				maxQ = s.max_questions;
-				status = `${s.model} + lora + typed heads · ${s.device}`;
+				online = true;
+				status = '';
 				loadImage(await (await fetch(EXAMPLE)).blob());
 			})
 			.catch(() => {
-				status = "offline right now. it runs on a single university gpu, so it isn't always up.";
+				status = "The model is offline right now. It runs on a single university GPU, so it isn't always up.";
 				preview = EXAMPLE;
 			});
 		return () => document.removeEventListener('paste', paste);
@@ -139,137 +145,152 @@
 </script>
 
 <svelte:head>
-	<title>dragonfly · adit.run()</title>
-	<meta name="description" content="ask an image many typed questions, get calibrated probabilities back in one forward pass." />
+	<title>Dragonfly (Research Preview)</title>
+	<meta name="description" content="Ask an image many typed questions and get calibrated probabilities back from one forward pass." />
+	<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
 </svelte:head>
 
-<div class="thin-centered">
-	<Nav />
-	<main>
-		<h1>dragonfly</h1>
-		<p>
-			a vision-language model that answers every question about an image in <b>one forward pass</b>, without
-			generating text. each answer is a calibrated probability distribution, and "can't answer" is its own
-			probability. it's qwen3-vl-4b with lora and custom typed heads, trained on 740k questions.
-		</p>
-		<p class="muted">research preview. edit the questions, answers update as you type. nothing you upload is saved.</p>
+<div class="page">
+	<header>
+		<h1>Dragonfly <span>(Research Preview)</span></h1>
+	</header>
 
-		<p class="status">model: {status}</p>
+	<div class="split">
+		<section class="left">
+			<label class="square" class:over class:empty={!preview}
+				ondragenter={(e) => { e.preventDefault(); over = true; }}
+				ondragover={(e) => { e.preventDefault(); over = true; }}
+				ondragleave={() => (over = false)}
+				ondrop={(e) => { e.preventDefault(); over = false; loadImage(e.dataTransfer?.files[0]); }}>
+				{#if preview}<img src={preview} alt="What the questions are about" />{:else}<em>Drop an image</em>{/if}
+				<input type="file" accept="image/*" hidden onchange={(e) => loadImage(e.currentTarget.files?.[0])} />
+			</label>
+			<p class="caption">
+				{#if status}{status}{:else}Drop, paste or click to change the image.{/if}
+			</p>
+		</section>
 
-		<label class="drop" class:over
-			ondragenter={(e) => { e.preventDefault(); over = true; }}
-			ondragover={(e) => { e.preventDefault(); over = true; }}
-			ondragleave={() => (over = false)}
-			ondrop={(e) => { e.preventDefault(); over = false; loadImage(e.dataTransfer?.files[0]); }}>
-			{#if preview}<img src={preview} alt="your upload" />{:else}<span>drop an image, paste one, or click to choose</span>{/if}
-			<input type="file" accept="image/*" hidden onchange={(e) => loadImage(e.currentTarget.files?.[0])} />
-		</label>
-		<p class="meta">{imgMeta}{#if imgMeta && preview}&nbsp;· {/if}{#if preview}click the image to change it{/if}</p>
-
-		<p><b>QUESTIONS</b></p>
-		{#each qs as q, i (q)}
-			<div class="q" oninput={askSoon}>
-				<div class="row">
-					<select bind:value={q.type} onchange={() => { q.result = undefined; askSoon(); }} aria-label="answer type">
-						<option value="bool">yes/no</option>
-						<option value="choice">choice</option>
-						<option value="score">scale</option>
-					</select>
-					<input class="grow" bind:value={q.q} maxlength="300" placeholder="ask something about the image" aria-label="question" />
-					<button class="rm" onclick={() => remove(i)} aria-label="remove question">×</button>
-				</div>
-				{#if q.type === 'choice'}
-					<input class="full" bind:value={q.options} placeholder="options, comma-separated (2–8)" aria-label="options" />
-				{:else if q.type === 'score'}
-					<div class="row scale">
-						<input class="num" type="number" min="0" max="9" bind:value={q.lo} aria-label="scale low" />
-						<input class="grow" bind:value={q.alo} maxlength="40" placeholder="low end means" aria-label="low label" />
-						<input class="num" type="number" min="1" max="10" bind:value={q.hi} aria-label="scale high" />
-						<input class="grow" bind:value={q.ahi} maxlength="40" placeholder="high end means" aria-label="high label" />
+		<section class="right" bind:this={list}>
+			{#each qs as q, i (q)}
+				<div class="q" oninput={askSoon}>
+					<div class="line">
+						<input class="text" bind:value={q.q} maxlength="300" placeholder="Ask something about the image" aria-label="Question" />
+						<button class="rm" onclick={() => remove(i)} aria-label="Remove question">×</button>
 					</div>
-				{/if}
-				{#if q.result}
-					{@const best = Math.max(...q.result.answers.map((a) => a[1]))}
-					<div class="result">
-						{#each sorted(q.result) as [name, p]}
-							<div class="ans" class:top={p === best}>
-								<span class="name">{name}</span>
-								<span class="track"><span class="fill" style="width:{p * 100}%"></span></span>
-								<span class="pct">{pct(p)}</span>
-							</div>
+					<div class="kinds" role="radiogroup" aria-label="Answer type">
+						{#each KINDS as [k, label]}
+							<button role="radio" aria-checked={q.type === k} class:on={q.type === k}
+								onclick={() => { q.type = k; q.result = undefined; askSoon(); }}>{label}</button>
 						{/each}
-						<span class="na" class:hi={q.result.na >= 0.5}>can't answer: {pct(q.result.na)}</span>
 					</div>
-				{/if}
-			</div>
-		{/each}
-		<div class="row actions">
-			<button onclick={add} disabled={qs.length >= maxQ}>+ add question</button>
-			<span class="timing">{timing}</span>
-		</div>
-		{#if error}<p class="error">{error}</p>{/if}
-
-		<p class="muted small">
-			how: the image is encoded once; every question (and every option) is packed into the same sequence behind an
-			attention mask that keeps them from seeing each other, so order never matters and each extra question costs
-			~10 tokens. typed heads read the answers straight off the hidden states. limits: no reasoning step, so counting
-			past ~5, small text and arithmetic are weak.
-		</p>
-	</main>
+					{#if q.type === 'choice'}
+						<input class="sub" bind:value={q.options} placeholder="Options, separated by commas" aria-label="Options" />
+					{:else if q.type === 'score'}
+						<div class="scale">
+							<input class="num" type="number" min="0" max="9" bind:value={q.lo} aria-label="Scale low" />
+							<input class="sub" bind:value={q.alo} maxlength="40" placeholder="means" aria-label="Low label" />
+							<span>to</span>
+							<input class="num" type="number" min="1" max="10" bind:value={q.hi} aria-label="Scale high" />
+							<input class="sub" bind:value={q.ahi} maxlength="40" placeholder="means" aria-label="High label" />
+						</div>
+					{/if}
+					{#if q.result}
+						{@const best = Math.max(...q.result.answers.map((a) => a[1]))}
+						<div class="bars">
+							{#each sorted(q.result) as [name, p]}
+								<div class="bar" class:top={p === best}>
+									<span class="name">{name}</span>
+									<span class="track"><span class="fill" style="width:{p * 100}%"></span></span>
+									<span class="pct">{pct(p)}</span>
+								</div>
+							{/each}
+							<p class="na" class:hi={q.result.na >= 0.5}>can't answer · {pct(q.result.na)}</p>
+						</div>
+					{/if}
+				</div>
+			{/each}
+			<button class="plus" onclick={add} disabled={qs.length >= maxQ} aria-label="Add a question">+</button>
+			{#if timing || error}<p class="caption" class:err={error}>{error || timing}</p>{/if}
+		</section>
+	</div>
 </div>
 
 <style>
-	.thin-centered {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 14px;
-		width: 40vw;
-		min-width: 320px;
-		max-width: 600px;
-		margin: 1.5rem auto 3rem auto;
-		padding: 2rem 2vw;
+	.page {
+		--ink: #1a1a1a;
+		--muted: #8a8a8a;
+		--line: #e6e6e6;
+		--na: #9a5b13;
+		min-height: 100vh;
 		box-sizing: border-box;
+		padding: 2.25rem 4vw 4rem;
+		background: #fff;
+		color: var(--ink);
+		font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+		font-size: 19px;
+		line-height: 1.45;
+		font-variant-numeric: lining-nums tabular-nums;
 	}
-	@media (max-width: 700px) {
-		.thin-centered { width: auto; min-width: 0; margin: 1rem 16px 3rem; padding: 0; }
+	h1 { margin: 0 0 3rem; font-size: 1.35rem; font-weight: 400; letter-spacing: 0.005em; }
+	h1 span { color: var(--muted); font-style: italic; }
+	.split { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: start; }
+	.left { position: sticky; top: 2rem; }
+	@media (max-width: 760px) {
+		.split { grid-template-columns: 1fr; gap: 2.5rem; }
+		.page { padding-inline: 16px; }
+		.left { position: static; }
 	}
-	main { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 0.9rem; }
-	:global(html), :global(body) { font-family: 'JetBrains Mono', monospace; font-size: 14px; margin: 0; background: #fff; }
-	h1 { font-size: 20px; font-weight: 700; margin: 0; }
-	p { margin: 0; line-height: 1.6; }
-	.muted { color: #666; }
-	.small { font-size: 12px; margin-top: 1rem; }
-	.status, .meta, .timing { font-size: 12px; color: #888; font-variant-numeric: tabular-nums; }
-	.drop {
-		display: flex; align-items: center; justify-content: center; min-height: 180px; padding: 0.75rem;
-		border: 1px dashed #bbb; cursor: pointer; color: #888; text-align: center;
+	.square {
+		display: flex; align-items: center; justify-content: center;
+		width: 100%; max-width: 80vh; aspect-ratio: 1 / 1; box-sizing: border-box;
+		border: 1px solid var(--line); cursor: pointer; transition: border-color 0.2s;
 	}
-	.drop.over { border-color: #2563eb; background: #eff6ff; }
-	.drop img { max-width: 100%; max-height: 340px; display: block; }
-	.q { border-top: 1px solid #eee; padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
-	.row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-	.grow { flex: 1 1 140px; min-width: 0; }
-	.full { width: 100%; box-sizing: border-box; }
-	.num { width: 3.5rem; }
-	input, select, button {
-		font: inherit; font-size: 13px; color: #222; background: #fff;
-		border: 1px solid #ddd; padding: 0.35rem 0.5rem; border-radius: 0;
+	.square.empty { border-style: dashed; }
+	.square:hover, .square.over { border-color: var(--ink); }
+	.square img { width: 100%; height: 100%; object-fit: contain; display: block; }
+	.square em { color: var(--muted); }
+	.caption { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; font-style: italic; max-width: 80vh; }
+	.caption.err { color: #a12a1e; font-style: normal; }
+
+	.right { display: flex; flex-direction: column; }
+	.q { padding: 0 0 1.6rem; margin-bottom: 1.6rem; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.45rem; }
+	.line { display: flex; align-items: baseline; gap: 0.5rem; }
+	input {
+		font: inherit; color: var(--ink); background: transparent; border: 0; border-radius: 0;
+		padding: 0.1rem 0; min-width: 0; outline: none;
 	}
-	input:focus, select:focus { outline: none; border-color: #2563eb; }
-	button { cursor: pointer; }
-	button:hover:not(:disabled) { border-color: #222; }
-	button:disabled { color: #aaa; cursor: default; }
-	.rm { border: none; color: #888; padding: 0.35rem; }
-	.result { display: flex; flex-direction: column; gap: 0.25rem; }
-	.ans { display: grid; grid-template-columns: minmax(6rem, 11rem) 1fr 3.6rem; gap: 0.6rem; align-items: center; font-size: 13px; }
+	input::placeholder { color: #b5b5b5; font-style: italic; }
+	.text { flex: 1; font-size: 1.15rem; }
+	.sub { font-size: 0.95rem; border-bottom: 1px solid var(--line); }
+	.sub:focus, .num:focus { border-bottom-color: var(--ink); }
+	.scale { display: flex; align-items: baseline; gap: 0.5rem; font-size: 0.95rem; color: var(--muted); }
+	.scale .sub { flex: 1; }
+	.num { width: 2.2rem; text-align: center; border-bottom: 1px solid var(--line); font-size: 0.95rem; appearance: textfield; -moz-appearance: textfield; }
+	.num::-webkit-inner-spin-button, .num::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+	button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+	.rm { color: #c4c4c4; font-size: 1.2rem; line-height: 1; }
+	.rm:hover { color: var(--ink); }
+	.kinds { display: flex; gap: 1.1rem; font-size: 0.9rem; }
+	.kinds button { color: #b5b5b5; }
+	.kinds button:hover { color: var(--muted); }
+	.kinds button.on { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+	.bars { display: flex; flex-direction: column; gap: 0.2rem; margin-top: 0.4rem; font-size: 0.95rem; }
+	.bar { display: grid; grid-template-columns: minmax(5rem, 9rem) 1fr 2.8rem; gap: 0.9rem; align-items: center; color: var(--muted); }
+	.bar.top { color: var(--ink); }
 	.name { overflow-wrap: anywhere; }
-	.track { height: 10px; background: #f3f4f6; }
-	.fill { display: block; height: 100%; background: #bfdbfe; transition: width 0.3s ease; }
-	.top .fill { background: #2563eb; }
-	.top .name { font-weight: 700; }
-	.pct { text-align: right; font-variant-numeric: tabular-nums; }
-	.na { font-size: 12px; color: #888; }
-	.na.hi { color: #b45309; font-weight: 700; }
-	.actions { justify-content: space-between; }
-	.error { color: #b91c1c; font-size: 13px; }
-	@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+	.track { height: 1px; background: var(--line); position: relative; }
+	.fill { position: absolute; left: 0; top: -1px; height: 3px; background: #c9c9c9; transition: width 0.35s ease; }
+	.top .fill { background: var(--ink); }
+	.pct { text-align: right; }
+	.na { margin: 0.2rem 0 0; font-size: 0.85rem; font-style: italic; color: var(--muted); }
+	.na.hi { color: var(--na); }
+
+	.plus {
+		width: 100%; height: 5.5rem; border: 1px solid var(--line); color: var(--muted);
+		font-size: 2.2rem; font-weight: 400; line-height: 1; transition: border-color 0.2s, color 0.2s;
+	}
+	.plus:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
+	.plus:disabled { opacity: 0.4; cursor: default; }
+	@media (prefers-reduced-motion: reduce) { .fill, .square, .plus { transition: none; } }
 </style>
