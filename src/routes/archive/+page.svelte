@@ -46,7 +46,7 @@ coz then ts would fet WAY too long (title of your sex tape).
 	<a href="http://www.incompleteideas.net/IncIdeas/BitterLesson.html" target="_blank">the bitter lesson</a><br>
 	<a href="https://xkcd.com/1211/" target="_blank">birds and dinosaurs - xkcd</a><br>
 	<a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgoqQ1qAYT0OQ6j7ezWu8GY2JlpsrW7aBqIwzk98O8snjfF6eiUQGWPKdVQPQ_e1vm2ePA3t9X6GBRk33kNO0rP_ketW7pJljsiKAkb1dkNyFgCKYL1LUH8xRFXYFCnsrbHV3LxWod5VbA/s640/20181030_232111.jpg" target="_blank">intl conf of surgeons - rk laxman</a><br>
-	<a href="https://paulgraham.com/ambitious.html" target="_blank">frighteningly ambitious startup ideas</a><br>
+	<a href="https://www.paulgraham.com/ds.html" target="_blank">do things that don't scale</a><br>
 	<a href="https://www.instagram.com/reels/DS9USsRE4ai/" target="_blank">adorable cat video</a><br>
 	<a href="https://cdn.mos.cms.futurecdn.net/QfLVpW7bGiruhRX3TpLqna.jpeg" target="_blank">1970 nike manifesto</a><br>
 	<a href="https://www.youtube.com/watch?v=eSvLFPFXjc8" target="_blank">field marshall sam manekshaw on leadership</a><br>
