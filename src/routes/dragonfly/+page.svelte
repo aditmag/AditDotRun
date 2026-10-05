@@ -171,6 +171,7 @@
 			<p class="caption">
 				{#if status}{status}{:else}Drop, paste or click to change the image.{/if}
 			</p>
+			<p class="foot"><a href="/">adit.run</a></p>
 		</section>
 
 		<section class="right" bind:this={list}>
@@ -217,7 +218,6 @@
 		</section>
 	</div>
 
-	<p class="foot"><a href="/">adit.run</a></p>
 </div>
 
 <style>
@@ -241,7 +241,7 @@
 	h1 { margin: 0; font-size: 1.6rem; font-weight: bold; }
 	.lede { margin: 0.4rem 0 0; }
 	h1 span { font-weight: normal; color: var(--muted); }
-	.foot { margin: 4rem 0 0; font-size: 0.85rem; }
+	.foot { margin: 0.75rem 0 0; font-size: 0.85rem; }
 	.foot a { color: var(--link); }
 	.split { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: start; }
 	.left { position: sticky; top: 2rem; }
@@ -252,14 +252,15 @@
 	}
 	.square {
 		display: flex; align-items: center; justify-content: center;
-		width: 100%; max-width: 80vh; aspect-ratio: 1 / 1; box-sizing: border-box;
+		/* never taller than the screen minus the title above and the caption + link below (13" laptops) */
+		width: 100%; max-width: calc(100dvh - 15rem); min-width: 12rem; aspect-ratio: 1 / 1; box-sizing: border-box;
 		border: 1px solid var(--line); cursor: pointer; transition: border-color 0.2s;
 	}
 	.square.empty { border-style: dashed; }
 	.square:hover, .square.over { border-color: var(--ink); }
 	.square img { width: 100%; height: 100%; object-fit: contain; display: block; }
 	.square .hint { color: var(--muted); }
-	.caption { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; max-width: 80vh; }
+	.caption { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; max-width: calc(100dvh - 15rem); }
 	.caption.err { color: #a12a1e; }
 
 	.right { display: flex; flex-direction: column; }
