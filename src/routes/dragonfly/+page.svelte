@@ -299,7 +299,8 @@
 
 	/* sticks to the bottom of the screen while the questions scroll, so it's always in view */
 	.plus {
-		position: sticky; bottom: 1rem; background: #fff; box-shadow: 0 -1.5rem 1.5rem #fff;
+		/* white fade above, solid white over the 1rem gap below, so scrolled content doesn't peek through */
+		position: sticky; bottom: 1rem; background: #fff; box-shadow: 0 -1.5rem 1.5rem #fff, 0 2rem 0 1rem #fff;
 		width: 100%; height: 4.5rem; border: 1px solid var(--line); color: var(--muted);
 		display: flex; align-items: center; justify-content: center; gap: 0.6rem;
 		transition: border-color 0.2s, color 0.2s;
