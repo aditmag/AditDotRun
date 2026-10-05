@@ -4,7 +4,8 @@
 	// the model server: one P100 on CSC cPouta (Finland), HTTPS via Caddy. Empty until that VM exists; meanwhile
 	// model/demo.sh opens this page with #api=http://localhost:8765&token=... (an SSH tunnel to a Roihu GPU).
 	// The fragment never leaves the browser.
-	const DEFAULT_API = '';
+	// 2026-10-05: an Aalto classroom RTX 5070 (thrashbarg) behind a Cloudflare quick tunnel; temporary.
+	const DEFAULT_API = 'https://alloy-expo-omaha-periods.trycloudflare.com';
 	let API = DEFAULT_API;
 	let token = '';
 	const EXAMPLE = '/photos/First_flight2.jpg';
