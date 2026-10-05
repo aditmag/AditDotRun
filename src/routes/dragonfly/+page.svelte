@@ -213,7 +213,7 @@
 					{/if}
 				</div>
 			{/each}
-			<button class="plus" onclick={add} disabled={qs.length >= maxQ} aria-label="Add a question">+</button>
+			<button class="plus" onclick={add} disabled={qs.length >= maxQ}><span>+</span> ask another question</button>
 			{#if timing || error}<p class="caption" class:err={error}>{error || timing}</p>{/if}
 		</section>
 	</div>
@@ -297,10 +297,14 @@
 	.na { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--muted); }
 	.na.hi { color: var(--na); }
 
+	/* sticks to the bottom of the screen while the questions scroll, so it's always in view */
 	.plus {
-		width: 100%; height: 5.5rem; border: 1px solid var(--line); color: var(--muted);
-		font-size: 2.4rem; line-height: 1; transition: border-color 0.2s, color 0.2s;
+		position: sticky; bottom: 1rem; background: #fff; box-shadow: 0 -1.5rem 1.5rem #fff;
+		width: 100%; height: 4.5rem; border: 1px solid var(--line); color: var(--muted);
+		display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+		transition: border-color 0.2s, color 0.2s;
 	}
+	.plus span { font-size: 2rem; line-height: 1; }
 	.plus:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
 	.plus:disabled { opacity: 0.4; cursor: default; }
 	@media (prefers-reduced-motion: reduce) { .fill, .square, .plus { transition: none; } }
