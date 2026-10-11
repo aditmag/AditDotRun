@@ -79,7 +79,7 @@
 		transition: transform 0.2s;
 	}
 	.logo.oura {
-		padding: 0.45em 0.55em;
+		padding: 0.4em 0.55em;
 		border-color: #000;
 		background: #000;
 		transform: rotate(3deg);
