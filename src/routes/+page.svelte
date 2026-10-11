@@ -22,7 +22,7 @@
 							</span>, currently studying at <a href="https://youtu.be/MShbP3OpASA?si=2S4O7T4Cwfd9VN0g&t=2997" target="_blank">aalto</a> in finland, who grew up attending 9 schools in 7 cities across india before graduating from <a href="https://youtu.be/8w8oGfe7TbE" target="_blank">sanskriti school</a>, new delhi.
 						</p>
 						<br/>
-						<p>most recently, i co-founded <a href="https://nullfellows.com" target="_blank">null fellows</a> and joined <a href="https://ouraring.com" target="_blank">oura</a> as the founding member of a 3-person innovation team.</p>
+						<p>most recently, i co-founded <a href="https://nullfellows.com" target="_blank" title="null fellows"><img class="logo" src="/logos/nullfellows.svg" alt="null fellows" /></a> and joined <a href="https://ouraring.com" target="_blank" title="oura"><img class="logo oura" src="/logos/oura.svg" alt="oura" /></a> as the founding member of a 3-person innovation team.</p>
 						<!-- <br> -->
 
                         <br/><br/>
@@ -64,6 +64,28 @@
 	a:hover {
 		color: #1d4ed8;
 		text-decoration-thickness: 2px;
+	}
+	.logo {
+		display: inline-block;
+		box-sizing: border-box;
+		height: 1.7em;
+		padding: 0.35em 0.5em;
+		border-radius: 0.45em;
+		border: 1px solid #e0e0e0;
+		background: #fff;
+		vertical-align: middle;
+		margin: -0.25em 0;
+		transform: rotate(-3deg);
+		transition: transform 0.2s;
+	}
+	.logo.oura {
+		padding: 0.45em 0.55em;
+		border-color: #000;
+		background: #000;
+		transform: rotate(3deg);
+	}
+	.logo:hover {
+		transform: rotate(0deg) scale(1.2);
 	}
 			.thin-centered {
 				font-family: 'JetBrains Mono', monospace;
