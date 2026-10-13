@@ -5,7 +5,7 @@
 	// model/demo.sh opens this page with #api=http://localhost:8765&token=... (an SSH tunnel to a Roihu GPU).
 	// The fragment never leaves the browser.
 	// 2026-10-05: an Aalto classroom RTX 5070 (thrashbarg) behind a Cloudflare quick tunnel; temporary.
-	const DEFAULT_API = 'https://alloy-expo-omaha-periods.trycloudflare.com';
+	const DEFAULT_API = 'https://reaches-chubby-longer-cartoons.trycloudflare.com';
 	let API = DEFAULT_API;
 	let token = '';
 	const EXAMPLE = '/photos/First_flight2.jpg';
