@@ -19,7 +19,7 @@
 	<hr />
 	<h2>Links</h2>
 	<p>
-		<a href="/new">Home</a>, <a href="/work">Work</a>, <a href="/stories">Stories</a>,
+		<a href="/">Home</a>, <a href="/work">Work</a>, <a href="/stories">Stories</a>,
 		<a href="/random">Random</a>
 	</p>
 </div>
