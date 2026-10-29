@@ -5,8 +5,8 @@
 		</a>
 	</div>
 	<div class="navbar-right">
-		<a href="/archive" class="nav-link">random(stuff)</a>
-		<a href="/hi" class="nav-link">say(hi)</a>
+		<a href="/random" class="nav-link">random(stuff)</a>
+		<a href="/hello" class="nav-link">say(hi)</a>
 	</div>
 </nav>
 
