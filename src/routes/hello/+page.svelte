@@ -15,7 +15,10 @@
 		Follow your dreams. But more importantly, follow me on
 		<a href="https://letterboxd.com/aditmag" target="_blank">Letterboxd</a>.
 	</p>
-	<img src="/lightsabers.jpeg" alt="A lightsaber duel at night" />
+	<figure>
+		<img src="/lightsabers.jpeg" alt="A lightsaber duel at night" />
+		<figcaption>37.428042836743366, -122.17379009286127</figcaption>
+	</figure>
 	<hr />
 	<h2>Links</h2>
 	<p>
@@ -44,11 +47,17 @@
 	p {
 		margin-bottom: 1.5rem;
 	}
+	figure {
+		margin: 0 0 1.5rem 0;
+	}
 	img {
 		display: block;
 		width: 280px;
 		max-width: 100%;
-		margin-bottom: 1.5rem;
+	}
+	figcaption {
+		margin-top: 0.4rem;
+		font-size: 12px;
 	}
 	hr {
 		width: 40px;
