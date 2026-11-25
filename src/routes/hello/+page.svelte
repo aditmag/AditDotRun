@@ -6,9 +6,9 @@
 	</p>
 	<p>
 		While my preferred mode of remote communication is carrier pigeon, you can also reach out to me on
-		<a href="mailto:adit@nullfellows.com">email</a>,
+		<a href="mailto:adit@nullfellows.com">E-mail</a>,
 		<a href="https://twitter.com/aditmag" target="_blank">Twitter</a>,
-		<a href="https://www.linkedin.com/in/aditmagotra/" target="_blank">LinkedIn</a>, or
+		<a href="https://www.linkedin.com/in/aditmagotra/" target="_blank">Linkedin</a>, or
 		<a href="https://www.instagram.com/aditmagotra/" target="_blank">Instagram</a>!
 	</p>
 	<p>
